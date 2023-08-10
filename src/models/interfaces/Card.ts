@@ -3,5 +3,5 @@ export default interface Card {
     listId: string;
     position: number;
     title: string;
-    text: string;
+    cardText: string;
 }
