@@ -20,10 +20,8 @@ export const getListsAndCards = middyfy(async (): Promise<APIGatewayProxyResult>
 }).use(cors());
 
 export const getCardsByListId = middyfy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    console.log("get cards=>",event.pathParameters)
     const listId = event.pathParameters.id;
     const cards: Card[] = await listService.getCardsByListId(listId);
-    console.log("get cards =>",cards)
     return formatJSONResponse({
         cards
     })

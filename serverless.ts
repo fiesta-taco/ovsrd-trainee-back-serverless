@@ -22,8 +22,10 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
+      LIST_TABLE: '${ssm:/${self:provider.stage}/list-table-name, null}',
+      CARD_TABLE: '${ssm:/${self:provider.stage}/card-table-name, null}',
     },
-    iam: {
+    /*iam: {
 
       role: {
         statements: [{
@@ -45,7 +47,7 @@ const serverlessConfiguration: AWS = {
         }],
       },
 
-    },
+    },*/
   },
   functions: {
     getListsAndCards, createList, createCard, getCardsByListId,
@@ -64,7 +66,7 @@ const serverlessConfiguration: AWS = {
       concurrency: 10,
     },
   },
-  resources: {
+  /*resources: {
     Resources: {
       ListTable: {
         Type: "AWS::DynamoDB::Table",
@@ -125,7 +127,7 @@ const serverlessConfiguration: AWS = {
         }
       },
     }
-  }
+  }*/
 };
 
 module.exports = serverlessConfiguration;

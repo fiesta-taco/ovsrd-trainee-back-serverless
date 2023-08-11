@@ -47,7 +47,6 @@ export default class ListService {
             title: createList.title,
             position: createList.position,
         }
-        console.log("New List=>", newList)
         return await listRepository.createList(newList);
     }
 
@@ -74,7 +73,6 @@ export default class ListService {
             await listRepository.updateListById(list);
         }
     }
-
 
     async updateCard(data: unknown):Promise<Card> {
         const card = data as Card;
