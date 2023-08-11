@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+    commands:
+      - npm install -g serverless  
+  build:
+    commands:
+      - npm install  
+      #- npm run lint  
+      #- npm test  
+  post_build:
+    commands:
+      - serverless deploy --stage $STAGE  #in build proj environment key:var - STAGE:{branch}
+
+
