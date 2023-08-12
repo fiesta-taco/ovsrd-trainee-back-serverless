@@ -1,12 +1,14 @@
 import { DocumentClient } from "aws-sdk/clients/dynamodb"
-import Card from "src/models/card-interface";
-import ListDB from 'src/models/list-db';
+import Card from "src/models/interfaces/Card";
+import ListDB from 'src/models/interfaces/ListDB';
 
 
 export default class ListRepository {
 
-  private ListTable: string = 'ListTable';
-  private CardTable: string = 'CardTable';
+  //private ListTable: string = 'ListTable';
+  //private CardTable: string = 'CardTable';
+  private ListTable: string =  process.env.LIST_TABLE;
+  private CardTable: string =  process.env.LIST_TABLE;
 
   constructor(private docClient: DocumentClient) { }
 
@@ -35,6 +37,15 @@ export default class ListRepository {
     return card.Item as Card;
   }
 
+  async getListById(listId: string): Promise<ListDB> {
+    const getList = {
+      TableName: this.ListTable,
+      Key: { listId: listId }
+    }
+    const list = await this.docClient.get(getList).promise();
+    return list.Item as ListDB;
+  }
+
   async createList(list: ListDB) {
     const createListParam = {
       TableName: this.ListTable,
@@ -61,7 +72,7 @@ export default class ListRepository {
     await this.docClient.delete(deleteCardParam).promise();
   }
 
-  async getCardsByListId(listId: string) {
+  async getCardsIdByListId(listId: string):Promise<Card[]> {
     const queryParam = {
       TableName: this.CardTable,
       IndexName: 'ListIdIndex',
@@ -71,44 +82,76 @@ export default class ListRepository {
       },
       ProjectionExpression: 'cardId',
     };
-    return await this.docClient.query(queryParam).promise();
+    const cards = await this.docClient.query(queryParam).promise();
+    return cards.Items as Card[];
   }
 
   async updateListById(list: ListDB) {
     const updateParam = {
       TableName: this.ListTable,
       Key: { listId: list.listId },
-      UpdateExpression: "set #title = :title",
+      UpdateExpression: "set #title = :title, #position = :position",
       ExpressionAttributeNames: {
         "#title": "title",
+        "#position":"position",
       },
       ExpressionAttributeValues: {
         ":title": list.title,
+        ":position":list.position,
       },
       ReturnValues: "ALL_NEW",
     }
-    return await this.docClient.update(updateParam).promise();
+     await this.docClient.update(updateParam).promise();
   }
 
 
-  async updateCardById(card: Card) {
+  async updateCardById(card: Card):Promise<Card> {
     const updateParam = {
       TableName: this.CardTable,
       Key: { cardId: card.cardId },
-      UpdateExpression: "set #title = :title, #text = :text, #position = :position",
+      UpdateExpression: "set #title = :title, #cardText = :cardText, #position = :position",
       ExpressionAttributeNames: {
         "#title": "title",
-        "#text": "text",
+        "#cardText": "cardText",
         "#position": "position",
       },
       ExpressionAttributeValues: {
         ":title": card.title,
-        ":text": card.text,
+        ":cardText": card.cardText,
         ":position": card.position
       },
       ReturnValues: "ALL_NEW",
     }
-    return await this.docClient.update(updateParam).promise();
+    const updatedCard = await this.docClient.update(updateParam).promise();
+    return updatedCard.Attributes as Card;
+  }
+
+  async getCardsByListId(listId: string):Promise<Card[]>{
+    const queryParam = {
+      TableName: this.CardTable,
+      IndexName: 'ListIdIndex',
+      KeyConditionExpression: 'listId = :listIdValue',
+      ExpressionAttributeValues: {
+        ':listIdValue': listId,
+      },
+    };
+    const cards = await this.docClient.query(queryParam).promise();
+    return cards.Items as Card[];
+  }
+
+  async getListsByPosition(deletedList: ListDB):Promise<ListDB[]>{
+    const queryParam = {
+      TableName: this.ListTable,
+      FilterExpression: '#positionAttr > :value',
+      ExpressionAttributeNames: {
+        '#positionAttr': 'position',
+      },
+      ExpressionAttributeValues: {
+        ':value': deletedList.position,
+      },
+    }
+    const lists = await this.docClient.scan(queryParam).promise();
+    return lists.Items as ListDB[]
   }
 
   async getCardsByPosition(deletedCard: Card): Promise<Card[]> {

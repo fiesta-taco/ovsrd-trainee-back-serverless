@@ -1,7 +1,10 @@
-import List from "src/models/list-interface";
+import List from "src/models/interfaces/List";
 import listRepository from "../repositories";
-import ListDB from "src/models/list-db";
-import Card from "src/models/card-interface";
+import ListDB from "src/models/interfaces/ListDB";
+import Card from "src/models/interfaces/Card";
+import { v4 } from "uuid";
+import CreateList from "src/models/interfaces/CreateList";
+import CreateCard from "src/models/interfaces/CreateCard";
 
 
 export default class ListService {
@@ -17,44 +20,67 @@ export default class ListService {
             }
             acc[listId].push(card);
             return acc;
-        }, {});
+        }, []);
 
         const resultLists: List[] = lists.map(list => ({
             listId: list.listId,
             title: list.title,
-            cards: cardByListId[list.listId] || [],
-        }));
+            position: list.position,
+            cards: (cardByListId[list.listId] || []).sort((a,b)=>a.position-b.position),
+        }))
+            .sort((a, b) => a.position - b.position);
         return resultLists;
     }
 
-    async createList(date: unknown) {
-        const list = date as ListDB;
-        return await listRepository.createList(list);
+    async getCardsByListId(listId:string):Promise<Card[]>{
+       const cards = await listRepository.getCardsByListId(listId);
+       const sortCards = cards.sort((a,b)=>a.position-b.position);
+       return sortCards;
+    }
+
+    async createList(data: unknown) {
+        const createList = data as CreateList
+        const id = v4();
+        const newList: ListDB = {
+            listId: id,
+            title: createList.title,
+            position: createList.position,
+        }
+        return await listRepository.createList(newList);
     }
 
     async createCard(data: unknown) {
-        const card = data as Card;
-        return await listRepository.createCard(card);
+        const cardData = data as CreateCard;
+        const id = v4();
+        const newCard = { ...cardData, cardId: id };
+        return await listRepository.createCard(newCard);
     }
 
     async updateList(data: unknown) {
         const list = data as ListDB;
-        return await listRepository.updateListById(list)
+        await listRepository.updateListById(list);
+        return list;
     }
 
-    async updateCard(data: unknown) {
+    async deleteList(listId: string) {
+        const deletedList = await listRepository.getListById(listId);
+        await this.deleteCardsByListId(listId);
+        await listRepository.deleteListById(listId);
+        const updatingLists = await listRepository.getListsByPosition(deletedList);
+        for (const list of updatingLists) {
+            list.position = list.position - 1;
+            await listRepository.updateListById(list);
+        }
+    }
+
+    async updateCard(data: unknown):Promise<Card> {
         const card = data as Card;
         return await listRepository.updateCardById(card)
     }
 
-    async deleteList(listId: string) {
-        await this.deleteCardsByListId(listId);
-        await listRepository.deleteListById(listId);
-    }
-
     async deleteCardsByListId(listId: string) {
-        const cards = await listRepository.getCardsByListId(listId);
-        const deleteRequests = cards.Items.map((card: Card) => ({
+        const cards = await listRepository.getCardsIdByListId(listId);
+        const deleteRequests = cards.map((card: Card) => ({
             DeleteRequest: {
                 Key: { cardId: card.cardId },
             },

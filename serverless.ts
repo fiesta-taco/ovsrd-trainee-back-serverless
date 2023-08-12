@@ -1,6 +1,7 @@
 import type { AWS } from '@serverless/typescript';
 import {
   createCard, createList, deleteCard, deleteList,
+  getCardsByListId,
   getListsAndCards, updateCard, updateList
 } from 'src/controllers';
 
@@ -12,7 +13,9 @@ const serverlessConfiguration: AWS = {
   plugins: ['serverless-esbuild', 'serverless-offline'],
   provider: {
     name: 'aws',
-    runtime: 'nodejs14.x',
+    runtime: 'nodejs18.x',
+    stage: 'feature', //branch
+    region: 'eu-central-1',
 
     apiGateway: {
       minimumCompressionSize: 1024,
@@ -21,8 +24,10 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
+      LIST_TABLE: '${ssm:/${self:provider.stage}/list-table-name, null}',
+      CARD_TABLE: '${ssm:/${self:provider.stage}/card-table-name, null}',
     },
-    iam: {
+    /*iam: {
 
       role: {
         statements: [{
@@ -44,10 +49,10 @@ const serverlessConfiguration: AWS = {
         }],
       },
 
-    },
+    },*/
   },
   functions: {
-    getListsAndCards, createList, createCard,
+    getListsAndCards, createList, createCard, getCardsByListId,
     deleteList, deleteCard, updateCard, updateList
   },
   package: { individually: true },
@@ -57,13 +62,13 @@ const serverlessConfiguration: AWS = {
       minify: false,
       sourcemap: true,
       exclude: ['aws-sdk'],
-      target: 'node14',
+      target: 'node18',
       define: { 'require.resolve': undefined },
       platform: 'node',
       concurrency: 10,
     },
   },
-  resources: {
+  /*resources: {
     Resources: {
       ListTable: {
         Type: "AWS::DynamoDB::Table",
@@ -124,7 +129,7 @@ const serverlessConfiguration: AWS = {
         }
       },
     }
-  }
+  }*/
 };
 
 module.exports = serverlessConfiguration;
