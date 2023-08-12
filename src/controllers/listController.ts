@@ -2,7 +2,6 @@
 import { formatJSONResponse } from "@libs/api-gateway";
 import { middyfy } from "@libs/lambda";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-
 import cors from "@middy/http-cors"
 import listService from "src/services";
 import List from "src/models/interfaces/List";

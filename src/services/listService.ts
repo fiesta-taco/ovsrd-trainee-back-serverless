@@ -20,13 +20,13 @@ export default class ListService {
             }
             acc[listId].push(card);
             return acc;
-        }, {});
+        }, []);
 
         const resultLists: List[] = lists.map(list => ({
             listId: list.listId,
             title: list.title,
             position: list.position,
-            cards: cardByListId[list.listId] || [],
+            cards: (cardByListId[list.listId] || []).sort((a,b)=>a.position-b.position),
         }))
             .sort((a, b) => a.position - b.position);
         return resultLists;
@@ -36,7 +36,6 @@ export default class ListService {
        const cards = await listRepository.getCardsByListId(listId);
        const sortCards = cards.sort((a,b)=>a.position-b.position);
        return sortCards;
-
     }
 
     async createList(data: unknown) {

@@ -9,6 +9,7 @@ export const getListsAndCards = {
             http: {
                 method: 'GET',
                 path: 'lists',
+                cors: true,
             },
         },
     ]
@@ -21,6 +22,7 @@ export const getCardsByListId = {
             http: {
                 method: 'GET',
                 path: 'cards/{id}',
+                cors: true,
             },
         },
     ]
@@ -33,6 +35,7 @@ export const createList = {
             http: {
                 method: 'POST',
                 path: 'list',
+                cors: true,
 
             },
         },
@@ -47,6 +50,7 @@ export const createCard = {
             http: {
                 method: 'POST',
                 path: 'card',
+                cors: true,
             },
         },
     ],
