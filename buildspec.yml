@@ -16,3 +16,4 @@ phases:
       - serverless deploy --stage $STAGE  #in build proj environment key:var - STAGE:{branch}
 
 
+
