@@ -13,10 +13,8 @@ const serverlessConfiguration: AWS = {
   plugins: ['serverless-esbuild', 'serverless-offline'],
   provider: {
     name: 'aws',
-    runtime: 'nodejs18.x',
-    stage: 'feature', //branch
-    region: 'eu-central-1',
-
+    runtime: 'nodejs14.x',
+    stage:'igorello',
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
@@ -62,7 +60,7 @@ const serverlessConfiguration: AWS = {
       minify: false,
       sourcemap: true,
       exclude: ['aws-sdk'],
-      target: 'node18',
+      target: 'node14',
       define: { 'require.resolve': undefined },
       platform: 'node',
       concurrency: 10,

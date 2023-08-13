@@ -2,10 +2,10 @@
 import { formatJSONResponse } from "@libs/api-gateway";
 import { middyfy } from "@libs/lambda";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import cors from "@middy/http-cors"
 import listService from "src/services";
 import List from "src/models/interfaces/List";
 import Card from "src/models/interfaces/Card";
+import httpCors from "@middy/http-cors";
 
 
 
@@ -16,7 +16,9 @@ export const getListsAndCards = middyfy(async (): Promise<APIGatewayProxyResult>
     return formatJSONResponse({
         lists
     })
-}).use(cors());
+}).use(httpCors({
+    origin: '*',
+  }));
 
 export const getCardsByListId = middyfy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const listId = event.pathParameters.id;
@@ -24,7 +26,9 @@ export const getCardsByListId = middyfy(async (event: APIGatewayProxyEvent): Pro
     return formatJSONResponse({
         cards
     })
-}).use(cors());
+}).use(httpCors({
+    origin: '*',
+  }));
 
 
 export const createList = middyfy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -38,7 +42,9 @@ export const createList = middyfy(async (event: APIGatewayProxyEvent): Promise<A
             status: 500, message: err
         });
     }
-}).use(cors());
+}).use(httpCors({
+    origin: '*',
+  }));
 
 export const createCard = middyfy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
@@ -51,7 +57,9 @@ export const createCard = middyfy(async (event: APIGatewayProxyEvent): Promise<A
             status: 500, message: e
         });
     }
-}).use(cors());
+}).use(httpCors({
+    origin: '*',
+  }));
 
 export const updateList = middyfy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
@@ -64,7 +72,9 @@ export const updateList = middyfy(async (event: APIGatewayProxyEvent): Promise<A
             status: 500, message: e
         });
     }
-}).use(cors());
+}).use(httpCors({
+    origin: '*',
+  }));
 
 export const deleteList = middyfy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const listId = event.pathParameters.id;
@@ -76,7 +86,9 @@ export const deleteList = middyfy(async (event: APIGatewayProxyEvent): Promise<A
             status: 500, message: e
         });
     }
-}).use(cors());
+}).use(httpCors({
+    origin: '*',
+  }));
 
 export const updateCard = middyfy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
@@ -90,7 +102,9 @@ export const updateCard = middyfy(async (event: APIGatewayProxyEvent): Promise<A
             status: 500, message: e
         });
     }
-}).use(cors());
+}).use(httpCors({
+    origin: '*',
+  }));
 
 
 
@@ -104,4 +118,6 @@ export const deleteCard = middyfy(async (event: APIGatewayProxyEvent): Promise<A
             status: 500, message: e
         });
     }
-}).use(cors());
+}).use(httpCors({
+    origin: '*',
+  }));

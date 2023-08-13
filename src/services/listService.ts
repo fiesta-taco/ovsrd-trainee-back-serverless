@@ -26,7 +26,7 @@ export default class ListService {
             listId: list.listId,
             title: list.title,
             position: list.position,
-            cards: (cardByListId[list.listId] || []).sort((a,b)=>a.position-b.position),
+            cards: (cardByListId[list.listId] || []).sort((a:Card,b:Card)=>a.position-b.position),
         }))
             .sort((a, b) => a.position - b.position);
         return resultLists;
