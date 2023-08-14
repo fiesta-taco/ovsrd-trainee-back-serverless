@@ -7,6 +7,8 @@ phases:
     commands:
       - npm install -g serverless
       - echo $STAGE 
+      - npm install aws-sdk
+
   build:
     commands:
       - npm install  
