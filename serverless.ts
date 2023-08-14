@@ -14,9 +14,7 @@ const serverlessConfiguration: AWS = {
   provider: {
     name: 'aws',
     runtime: 'nodejs18.x',
-    stage: 'feature', //branch
-    region: 'eu-central-1',
-
+    stage:'igorello',
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
