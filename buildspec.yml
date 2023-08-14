@@ -5,7 +5,8 @@ phases:
     runtime-versions:
       nodejs: 18
     commands:
-      - npm install -g serverless  
+      - npm install -g serverless
+      - echo $STAGE 
   build:
     commands:
       - npm install  

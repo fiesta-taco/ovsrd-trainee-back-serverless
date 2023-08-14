@@ -5,8 +5,6 @@ import {
   getListsAndCards, updateCard, updateList
 } from 'src/controllers';
 
-
-
 const serverlessConfiguration: AWS = {
   service: 'aws-nodejs',
   frameworkVersion: '3',
@@ -15,6 +13,7 @@ const serverlessConfiguration: AWS = {
     name: 'aws',
     runtime: 'nodejs18.x',
     stage:'igorello',
+    region: 'eu-central-1',
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
@@ -25,29 +24,6 @@ const serverlessConfiguration: AWS = {
       LIST_TABLE: '${ssm:/${self:provider.stage}/list-table-name, null}',
       CARD_TABLE: '${ssm:/${self:provider.stage}/card-table-name, null}',
     },
-    /*iam: {
-
-      role: {
-        statements: [{
-          Effect: "Allow",
-          Action: [
-            "dynamodb:DescribeTable",
-            "dynamodb:Query",
-            "dynamodb:Scan",
-            "dynamodb:GetItem",
-            "dynamodb:PutItem",
-            "dynamodb:UpdateItem",
-            "dynamodb:DeleteItem",
-          ],
-          Resource: [
-            "arn:aws:dynamodb:us-east-1:*:table/ListTable",
-            "arn:aws:dynamodb:us-east-1:*:table/CardTable",
-            "arn:aws:dynamodb:us-east-1:*:table/CardTable/index/ListIdIndex",
-          ]
-        }],
-      },
-
-    },*/
   },
   functions: {
     getListsAndCards, createList, createCard, getCardsByListId,
@@ -66,68 +42,6 @@ const serverlessConfiguration: AWS = {
       concurrency: 10,
     },
   },
-  /*resources: {
-    Resources: {
-      ListTable: {
-        Type: "AWS::DynamoDB::Table",
-        Properties: {
-          TableName: "ListTable",
-          AttributeDefinitions: [{
-            AttributeName: "listId",
-            AttributeType: "S",
-          }],
-          KeySchema: [{
-            AttributeName: "listId",
-            KeyType: "HASH"
-          }],
-          ProvisionedThroughput: {
-            ReadCapacityUnits: 1,
-            WriteCapacityUnits: 1
-          },
-
-        }
-      },
-      CardTable: {
-        Type: 'AWS::DynamoDB::Table',
-        Properties: {
-          TableName: "CardTable",
-          AttributeDefinitions: [
-            { AttributeName: 'cardId', AttributeType: 'S' },
-            { AttributeName: 'listId', AttributeType: 'S' },
-          ],
-          KeySchema: [
-            {
-              AttributeName: "cardId",
-              KeyType: "HASH",
-            },
-          ],
-          ProvisionedThroughput: {
-            ReadCapacityUnits: 1,
-            WriteCapacityUnits: 1,
-          },
-          GlobalSecondaryIndexes: [
-            {
-              IndexName: "ListIdIndex",
-              KeySchema: [
-                {
-                  AttributeName: "listId",
-                  KeyType: "HASH",
-                },
-
-              ],
-              Projection: {
-                ProjectionType: "ALL",
-              },
-              ProvisionedThroughput: {
-                ReadCapacityUnits: 1,
-                WriteCapacityUnits: 1,
-              },
-            },
-          ],
-        }
-      },
-    }
-  }*/
 };
 
 module.exports = serverlessConfiguration;
