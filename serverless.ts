@@ -31,8 +31,7 @@ const serverlessConfiguration: AWS = {
           'dynamodb:DeleteItem',
         ],
         Resource: [
-          'arn:aws:dynamodb:eu-central-1:666398651410:table/ListTable-dev',
-          'arn:aws:dynamodb:eu-central-1:666398651410:table/CardTable-dev',
+          'arn:aws:dynamodb:eu-central-1:666398651410:table/*',
         ],
       },
     ],
