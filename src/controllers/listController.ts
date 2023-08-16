@@ -121,3 +121,18 @@ export const deleteCard = middyfy(async (event: APIGatewayProxyEvent): Promise<A
 }).use(httpCors({
     origin: '*',
   }));
+
+  export const dragCard = middyfy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    try {
+        const card = await listService.dragCard(event.body)
+        return formatJSONResponse({
+            card
+        });
+    } catch (e) {
+        return formatJSONResponse({
+            status: 500, message: e
+        });
+    }
+}).use(httpCors({
+    origin: '*',
+  }));

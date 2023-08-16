@@ -7,6 +7,7 @@ import CreateList from "src/models/interfaces/CreateList";
 import CreateCard from "src/models/interfaces/CreateCard";
 
 
+
 export default class ListService {
 
 
@@ -26,16 +27,16 @@ export default class ListService {
             listId: list.listId,
             title: list.title,
             position: list.position,
-            cards: (cardByListId[list.listId] || []).sort((a:Card,b:Card)=>a.position-b.position),
+            cards: (cardByListId[list.listId] || []).sort((a: Card, b: Card) => a.position - b.position),
         }))
             .sort((a, b) => a.position - b.position);
         return resultLists;
     }
 
-    async getCardsByListId(listId:string):Promise<Card[]>{
-       const cards = await listRepository.getCardsByListId(listId);
-       const sortCards = cards.sort((a,b)=>a.position-b.position);
-       return sortCards;
+    async getCardsByListId(listId: string): Promise<Card[]> {
+        const cards = await listRepository.getCardsByListId(listId);
+        const sortCards = cards.sort((a:Card, b:Card) => a.position - b.position);
+        return sortCards;
     }
 
     async createList(data: unknown) {
@@ -73,7 +74,7 @@ export default class ListService {
         }
     }
 
-    async updateCard(data: unknown):Promise<Card> {
+    async updateCard(data: unknown): Promise<Card> {
         const card = data as Card;
         return await listRepository.updateCardById(card)
     }
@@ -94,9 +95,27 @@ export default class ListService {
     async deleteCardByIdAndUpdatePosition(cardId: string) {
         const deletedCard = await listRepository.getCardById(cardId)
         await listRepository.deleteCardById(cardId);
-        const updatingCard = await listRepository.getCardsByPosition(deletedCard);
+        const updatingCard = await listRepository.getCardsByPosition(deletedCard.listId, deletedCard.position);
         for (const card of updatingCard) {
             card.position = card.position - 1;
+            await listRepository.updateCardById(card);
+        }
+    }
+    async dragCard(data: unknown) {
+        const movedCrad = data as Card;
+        await this.deleteCardByIdAndUpdatePosition(movedCrad.cardId);
+        await this.createPositionByDraggedCard(movedCrad.listId, movedCrad.position-1);
+        return await listRepository.createCard(movedCrad)
+    }
+/**
+ * update all cards position(increase by 1) witch >= future index array
+ * @param listId search cards
+ * @param futureIndexArray cards in list by condition
+ */
+    async createPositionByDraggedCard(listId: string, futureIndexArray: number) {
+        const updatingCard = await listRepository.getCardsByPosition(listId, futureIndexArray);
+        for (const card of updatingCard) {
+            card.position = card.position + 1;
             await listRepository.updateCardById(card);
         }
     }

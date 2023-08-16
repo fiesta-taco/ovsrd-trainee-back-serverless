@@ -154,7 +154,7 @@ export default class ListRepository {
     return lists.Items as ListDB[]
   }
 
-  async getCardsByPosition(deletedCard: Card): Promise<Card[]> {
+  async getCardsByPosition(listId:string, position: number): Promise<Card[]> {
     const queryParam = {
       TableName: this.CardTable,
       IndexName: 'ListIdIndex',
@@ -164,8 +164,8 @@ export default class ListRepository {
         '#positionAttr': 'position',
       },
       ExpressionAttributeValues: {
-        ':listIdValue': deletedCard.listId,
-        ':value': deletedCard.position,
+        ':listIdValue': listId,
+        ':value': position,
       },
     }
     const cards = await this.docClient.query(queryParam).promise();
@@ -201,28 +201,5 @@ export default class ListRepository {
     }).promise();
   }
 
-
-    /*async updateCardPosition(deletedCard: CardDB) {
-    const updateParam = {
-      TableName: this.CardTable,
-      Key: { cardId: deletedCard.cardId },
-      UpdateExpression: 'SET #pos = #pos - :decrementValue',
-      ConditionExpression: 'listId = :listIdValue AND #pos > :positionValue',
-      ExpressionAttributeNames: {
-        '#pos': 'position',
-      },
-      ExpressionAttributeValues: {
-        ':decrementValue': 1,
-        ':listIdValue': deletedCard.listId,
-        ':positionValue': deletedCard.position,
-      },
-      ReturnValues: "ALL_NEW",
-    }
-    try{
-    return await this.docClient.update(updateParam).promise();
-    } catch (err) {
-      throw new Error(`Failed to update card: ${err.message}`);
-    }
-  }*/
 
 }
