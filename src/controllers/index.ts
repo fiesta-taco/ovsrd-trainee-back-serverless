@@ -113,3 +113,17 @@ export const updateCard = {
         },
     ],
 };
+
+export const dragCard = {
+    handler: `${handlerPath(__dirname)}/listController.dragCard`,
+    timeout:10,
+    events: [
+        {
+            http: {
+                method: 'POST',
+                path: 'drag-card',
+                cors: true,
+            },
+        },
+    ],
+};

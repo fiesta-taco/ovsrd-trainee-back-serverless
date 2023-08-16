@@ -1,8 +1,8 @@
 import type { AWS } from '@serverless/typescript';
 import {
   createCard, createList, deleteCard, deleteList,
-  getCardsByListId,
-  getListsAndCards, updateCard, updateList
+  getCardsByListId, getListsAndCards, updateCard,
+  updateList, dragCard
 } from 'src/controllers';
 
 const serverlessConfiguration: AWS = {
@@ -44,7 +44,7 @@ const serverlessConfiguration: AWS = {
   },
   functions: {
     getListsAndCards, createList, createCard, getCardsByListId,
-    deleteList, deleteCard, updateCard, updateList
+    deleteList, deleteCard, updateCard, updateList, dragCard
   },
   package: { individually: true },
   custom: {
