@@ -4,4 +4,5 @@ export default interface Card {
     position: number;
     title: string;
     cardText: string;
+    imageURL:string;
 }
