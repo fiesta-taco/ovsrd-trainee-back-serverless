@@ -39,8 +39,7 @@ export default class ListService {
         return sortCards;
     }
 
-    async createList(data: unknown) {
-        const createList = data as CreateList
+    async createList(createList: CreateList) {
         const id = v4();
         const newList: ListDB = {
             listId: id,
@@ -50,15 +49,13 @@ export default class ListService {
         return await listRepository.createList(newList);
     }
 
-    async createCard(data: unknown) {
-        const cardData = data as CreateCard;
+    async createCard(cardData: CreateCard) {
         const id = v4();
         const newCard = { ...cardData, cardId: id };
         return await listRepository.createCard(newCard);
     }
 
-    async updateList(data: unknown) {
-        const list = data as ListDB;
+    async updateList(list: ListDB) {
         await listRepository.updateListById(list);
         return list;
     }
@@ -74,8 +71,7 @@ export default class ListService {
         }
     }
 
-    async updateCard(data: unknown): Promise<Card> {
-        const card = data as Card;
+    async updateCard(card: Card): Promise<Card> {
         return await listRepository.updateCardById(card)
     }
 
@@ -101,8 +97,7 @@ export default class ListService {
             await listRepository.updateCardById(card);
         }
     }
-    async dragCard(data: unknown) {
-        const movedCrad = data as Card;
+    async dragCard(movedCrad: Card) {
         await this.deleteCardByIdAndUpdatePosition(movedCrad.cardId);
         await this.createPositionByDraggedCard(movedCrad.listId, movedCrad.position-1);
         return await listRepository.createCard(movedCrad)
