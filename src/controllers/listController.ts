@@ -136,7 +136,7 @@ export const updateCard = middyfy(async (event: APIGatewayProxyEvent): Promise<A
     try {
         const updateCard: Card = typeof event.body === 'string'
         ?JSON.parse(event.body)
-        :event.body 
+        :event.body;
         const card = await listService.updateCard(updateCard)
         return formatJSONResponse({
             card
