@@ -6,6 +6,9 @@ import listService from "src/services";
 import List from "src/models/interfaces/List";
 import Card from "src/models/interfaces/Card";
 import httpCors from "@middy/http-cors";
+import CreateList from "src/models/interfaces/CreateList";
+import CreateCard from "src/models/interfaces/CreateCard";
+import ListDB from "src/models/interfaces/ListDB";
 
 
 
@@ -51,9 +54,12 @@ export const getCardsByListId = middyfy(async (event: APIGatewayProxyEvent): Pro
 
 export const createList = middyfy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
-        const newList = await listService.createList(event.body);
+        const newList: CreateList = typeof event.body === 'string'
+        ?JSON.parse(event.body)
+        :event.body; 
+        const result = await listService.createList(newList);
         return formatJSONResponse({
-            list: newList
+            list: result
         })
     } catch (err) {
         if (err.code === "ResourceNotFoundException") {
@@ -69,7 +75,10 @@ export const createList = middyfy(async (event: APIGatewayProxyEvent): Promise<A
 
 export const createCard = middyfy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
-        const card = await listService.createCard(event.body)
+        const newCard: CreateCard = typeof event.body === 'string'
+        ?JSON.parse(event.body)
+        :event.body;
+        const card = await listService.createCard(newCard)
         return formatJSONResponse({
             card
         });
@@ -87,7 +96,10 @@ export const createCard = middyfy(async (event: APIGatewayProxyEvent): Promise<A
 
 export const updateList = middyfy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
-        const newList = await listService.updateList(event.body)
+        const updateList: ListDB = typeof event.body === 'string'
+        ?JSON.parse(event.body)
+        :event.body;
+        const newList = await listService.updateList(updateList)
         return formatJSONResponse({
             list: newList
         });
@@ -122,8 +134,10 @@ export const deleteList = middyfy(async (event: APIGatewayProxyEvent): Promise<A
 
 export const updateCard = middyfy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
-        const card = await listService.updateCard(event.body)
-
+        const updateCard: Card = typeof event.body === 'string'
+        ?JSON.parse(event.body)
+        :event.body;
+        const card = await listService.updateCard(updateCard)
         return formatJSONResponse({
             card
         });
@@ -160,7 +174,10 @@ export const deleteCard = middyfy(async (event: APIGatewayProxyEvent): Promise<A
 
 export const dragCard = middyfy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
-        const card = await listService.dragCard(event.body)
+        const dragCard: Card = typeof event.body === 'string'
+        ?JSON.parse(event.body)
+        :event.body;  
+        const card = await listService.dragCard(dragCard)
         return formatJSONResponse({
             card
         });
