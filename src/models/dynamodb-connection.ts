@@ -8,7 +8,9 @@ const dynamoDBClient = (): DocumentClient => {
       endpoint: "http://localhost:5000",
     });
   }*/
-  return new AWS.DynamoDB.DocumentClient();
+  return new AWS.DynamoDB.DocumentClient({
+    region:'us-east-1',
+  });
 };
 
 export default dynamoDBClient;

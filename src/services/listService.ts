@@ -40,18 +40,12 @@ export default class ListService {
     }
 
     async createList(createList: CreateList) {
-        const id = v4();
-        const newList: ListDB = {
-            listId: id,
-            title: createList.title,
-            position: createList.position,
-        }
+        const newList = this.addListId(createList);
         return await listRepository.createList(newList);
     }
 
     async createCard(cardData: CreateCard) {
-        const id = v4();
-        const newCard = { ...cardData, cardId: id };
+        const newCard = this.addCardId(cardData);
         return await listRepository.createCard(newCard);
     }
 
@@ -113,6 +107,22 @@ export default class ListService {
             card.position = card.position + 1;
             await listRepository.updateCardById(card);
         }
+    }
+
+    addListId(createList:CreateList){
+        const id = v4();
+        const newList: ListDB = {
+            listId: id,
+            title: createList.title,
+            position: createList.position,
+        }
+        return newList;
+    }
+
+    addCardId(cardData:CreateCard){
+        const id = v4();
+        const newCard = { ...cardData, cardId: id };
+        return newCard;
     }
 
 }

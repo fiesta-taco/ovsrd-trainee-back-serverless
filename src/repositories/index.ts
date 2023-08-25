@@ -1,6 +1,6 @@
 
-import dynamoDBClient from "src/models/dynamodb-connection";
-import ListRepository from "src/repositories/listRepository";
+import dynamoDBClient from "../models/dynamodb-connection";
+import ListRepository from "../repositories/listRepository";
 
 const listRepository = new ListRepository(dynamoDBClient());
 

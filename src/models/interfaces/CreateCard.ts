@@ -3,5 +3,5 @@ export default interface CreateCard {
     position: number;
     title: string;
     cardText: string;
-    imageURL:string;
+    s3Key:string;
 }
