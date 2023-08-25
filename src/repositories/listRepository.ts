@@ -5,10 +5,10 @@ import ListDB from 'src/models/interfaces/ListDB';
 
 export default class ListRepository {
 
-  private ListTable: string = 'ListTable';
-  private CardTable: string = 'CardTable';
-  //private ListTable: string =  process.env.LIST_TABLE;
-  //private CardTable: string =  process.env.CARD_TABLE;
+  //private ListTable: string = 'ListTable';
+  //private CardTable: string = 'CardTable';
+  private ListTable: string =  process.env.LIST_TABLE;
+  private CardTable: string =  process.env.CARD_TABLE;
 
   constructor(private docClient: DocumentClient) { }
 
