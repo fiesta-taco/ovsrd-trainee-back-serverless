@@ -192,3 +192,24 @@ export const dragCard = middyfy(async (event: APIGatewayProxyEvent): Promise<API
 }).use(httpCors({
     origin: '*',
 }));
+
+export const dragList = middyfy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    try {
+        const dragList: ListDB = typeof event.body === 'string'
+        ?JSON.parse(event.body)
+        :event.body;  
+        const list = await listService.dragList(dragList)
+        return formatJSONResponse({
+            list
+        });
+    } catch (e) {
+        if (e.code === "ResourceNotFoundException") {
+            console.error("The requested table does not exist in the database.===----------!!!!");
+        }
+        return formatJSONResponse({
+            status: 500, message: e
+        });
+    }
+}).use(httpCors({
+    origin: '*',
+}));

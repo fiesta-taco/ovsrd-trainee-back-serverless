@@ -141,7 +141,7 @@ export default class ListRepository {
     return cards.Items as Card[];
   }
 
-  async getListsByPosition(deletedList: ListDB):Promise<ListDB[]>{
+  async getListsByPosition(position: number):Promise<ListDB[]>{
     const queryParam = {
       TableName: this.ListTable,
       FilterExpression: '#positionAttr > :value',
@@ -149,7 +149,7 @@ export default class ListRepository {
         '#positionAttr': 'position',
       },
       ExpressionAttributeValues: {
-        ':value': deletedList.position,
+        ':value': position,
       },
     }
     const lists = await this.docClient.scan(queryParam).promise();
