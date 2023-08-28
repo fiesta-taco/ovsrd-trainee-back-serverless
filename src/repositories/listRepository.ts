@@ -6,7 +6,7 @@ import ListDB from 'src/models/interfaces/ListDB';
 export default class ListRepository {
 
   //private ListTable: string = 'ListTable';
- // private CardTable: string = 'CardTable';
+  //private CardTable: string = 'CardTable';
   private ListTable: string =  process.env.LIST_TABLE;
   private CardTable: string =  process.env.CARD_TABLE;
 
@@ -109,18 +109,18 @@ export default class ListRepository {
     const updateParam = {
       TableName: this.CardTable,
       Key: { cardId: card.cardId },
-      UpdateExpression: "set #title = :title, #cardText = :cardText, #position = :position, #imageURL = :imageURL",
+      UpdateExpression: "set #title = :title, #cardText = :cardText, #position = :position, #s3Key = :s3Key",
       ExpressionAttributeNames: {
         "#title": "title",
         "#cardText": "cardText",
         "#position": "position",
-        "#imageURL": "imageURL"
+        "#s3Key": "s3Key"
       },
       ExpressionAttributeValues: {
         ":title": card.title,
         ":cardText": card.cardText,
         ":position": card.position,
-        ":imageURL": card.imageURL,
+        ":s3Key": card.s3Key,
       },
       ReturnValues: "ALL_NEW",
     }
@@ -141,7 +141,7 @@ export default class ListRepository {
     return cards.Items as Card[];
   }
 
-  async getListsByPosition(deletedList: ListDB):Promise<ListDB[]>{
+  async getListsByPosition(position: number):Promise<ListDB[]>{
     const queryParam = {
       TableName: this.ListTable,
       FilterExpression: '#positionAttr > :value',
@@ -149,7 +149,7 @@ export default class ListRepository {
         '#positionAttr': 'position',
       },
       ExpressionAttributeValues: {
-        ':value': deletedList.position,
+        ':value': position,
       },
     }
     const lists = await this.docClient.scan(queryParam).promise();
