@@ -9,7 +9,7 @@ const dynamoDBClient = (): DocumentClient => {
     });
   }*/
   return new AWS.DynamoDB.DocumentClient({
-    region:'eu-central-1',
+    region:'us-east-1',
   });
 };
 
