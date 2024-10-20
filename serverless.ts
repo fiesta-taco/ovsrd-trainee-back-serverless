@@ -12,8 +12,8 @@ const serverlessConfiguration: AWS = {
   provider: {
     name: 'aws',
     runtime: 'nodejs16.x',
-    stage:'dev',
-    region: 'us-east-1',
+    stage:'main',
+    region: 'eu-central-1',
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
@@ -32,7 +32,7 @@ const serverlessConfiguration: AWS = {
           'dynamodb:BatchWriteItem',
         ],
         Resource: [
-          'arn:aws:dynamodb:us-east-1:905418051827:table/*',
+          'arn:aws:dynamodb:eu-central-1:905418051827:table/*',
         ],
       },
     ],
